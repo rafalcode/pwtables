@@ -17,10 +17,10 @@
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import urllib3
+import urllib2
 import numpy as np
 
-http = urllib3.PoolManager()
-url="http://datasets.flowingdata.com/ppg2008.csv"
-http = urllib3.PoolManager()
-print http
+# http = urllib3.PoolManager()
+# url="http://datasets.flowingdata.com/ppg2008.csv"
+# http = urllib3.PoolManager()
+# print http

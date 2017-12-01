@@ -17,11 +17,12 @@
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from urllib2 import urlopen
+# from urllib2 import urlopen
 import numpy as np
-%pylab inline
+# %pylab inline
 
-page = urlopen("http://datasets.flowingdata.com/ppg2008.csv")
+# page = urlopen("http://datasets.flowingdata.com/ppg2008.csv")
+page = "ppg2008.csv"
 nba = pd.read_csv(page, index_col=0)
 
 # Normalize data columns
@@ -76,3 +77,5 @@ for t in ax.xaxis.get_major_ticks():
 for t in ax.yaxis.get_major_ticks():
     t.tick1On = False
     t.tick2On = False
+
+plt.show()
