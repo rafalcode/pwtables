@@ -417,6 +417,9 @@ int main(int argc, char *argv[])
         cairo_show_text (cr, pwma->c1[i]);
         for (j=0; j<pwma->nc-i; j++) { /* i and j serve as our block indices */
             m=32*(pwma->v[i*pwma->nc+j] - min) / (max - min);
+#ifdef DBG
+            printf("%s vs. %s: m is %i\n", pwma->r1[i], pwma->c1[j], m); 
+#endif
             cairo_set_source_rgb(cr, (float)col1[m].r/255., (float)col1[m].g/255., (float)col1[m].b/255.);
             rstx=LM + cbsz*j;
             rsty=TM + rbsz*i;
