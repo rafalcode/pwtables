@@ -385,8 +385,8 @@ int main(int argc, char *argv[])
     }
 
 
-    float cbsz = (float)(IMWIDTH-LM)/(pwma->nc+1); /* size of each column-band */;
-    float rbsz = (float)(IMHEIGHT-TM)/(pwma->nr+1); /* size of each row-band */;
+    float cbsz = (float)(IMWIDTH-LM)/(pwma->nc); /* size of each column-band */;
+    float rbsz = (float)(IMHEIGHT-TM)/(pwma->nr); /* size of each row-band */;
 
     /*** cairo gear ***/
     cairo_surface_t *surface;
@@ -405,17 +405,17 @@ int main(int argc, char *argv[])
     float rstx /*rect start x-dir */, rsty /*rect start y-dir */;
     for (j=0; j<pwma->nc; j++) { /* i and j serve as our block indices */
         cairo_text_extents (cr, pwma->r1[j], &te);
-        cairo_move_to (cr, (LM+cbsz+cbsz*j+cbsz/2) - te.x_bearing - te.width/2, TM - fe.descent-4);
+        cairo_move_to (cr, (LM+cbsz*j+cbsz/2) - te.x_bearing - te.width/2, TM - fe.descent-4);
         cairo_set_source_rgb(cr, 0.9, 0.9, .9);
         cairo_show_text (cr, pwma->r1[j]);
     }
     for (i=0; i<pwma->nr; i++) {
         cairo_text_extents (cr, pwma->c1[i], &te);
         // cairo_move_to (cr, 4 - te.x_bearing - te.width, TM+i*rbsz +rbsz/2.- fe.descent + fe.height/2);
-        cairo_move_to (cr, 4, TM+rbsz+i*rbsz +rbsz/2.- fe.descent + fe.height/2);
+        cairo_move_to (cr, 4, TM+i*rbsz +rbsz/2.- fe.descent + fe.height/2);
         cairo_set_source_rgb(cr, 0.9, 0.9, .9);
         cairo_show_text (cr, pwma->c1[i]);
-        for (j=0; j<pwma->nc; j++) { /* i and j serve as our block indices */
+        for (j=0; j<pwma->nc-i; j++) { /* i and j serve as our block indices */
             m=32*(pwma->v[i*pwma->nc+j] - min) / (max - min);
             cairo_set_source_rgb(cr, (float)col1[m].r/255., (float)col1[m].g/255., (float)col1[m].b/255.);
             rstx=LM + cbsz*j;
@@ -425,7 +425,7 @@ int main(int argc, char *argv[])
         }
     }
     /* Write output and clean up */
-    cairo_surface_write_to_png (surface, "rcol.png");
+    cairo_surface_write_to_png (surface, "rcol2.png");
     cairo_destroy (cr);
     cairo_surface_destroy (surface);
 
