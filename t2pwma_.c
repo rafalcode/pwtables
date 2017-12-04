@@ -137,35 +137,6 @@ void free_aawc(aaw_c **aw)
     free(taw);
 }
 
-void prtaawapap(aaw_c *aawc) /* print aaw As Pure As Possible */
-{
-    int i, j, k, ppi=0;
-    for(i=0;i<aawc->numl;++i) {
-        // printf("ln%dsp%dtb%d) ", i, aawc->aaw[i]->stsps, aawc->aaw[i]->sttbs);
-        /* order fo tabs and space will be messed up sure, but usually it will be one or the other. */
-        for(j=0; j<aawc->aaw[i]->stsps;j++)
-            putchar(' ');
-        for(j=0; j<aawc->aaw[j]->sttbs;j++)
-            putchar('\t');
-        for(j=0;j<aawc->aaw[i]->al;++j) {
-            for(k=0;k<aawc->aaw[i]->aw[j]->lp1-1; k++)
-                putchar(aawc->aaw[i]->aw[j]->w[k]);
-            if(j==aawc->aaw[i]->al-1)
-                putchar('\n');
-            else
-                putchar(' ');
-        }
-
-        if( (ppi< aawc->ppsz) && (i == aawc->ppa[ppi])) { /* && means it will not evaluate second, if first is neg. */
-#ifdef DBG
-            putchar('\n');
-            printf("%d ", ppi); 
-#endif
-            ppi++;
-        }
-    }
-}
-
 void prtaawcdbg(aaw_c *aawc)
 {
     int i, j, k;
@@ -265,28 +236,6 @@ void prt_tnum(aaw_c *aawc) /* will print matching numbers of mm:ss style */
     }
 }
 
-void prtaawcdata(aaw_c *aawc) /* print line and word details, but not the words themselves */
-{
-    int i, j;
-    for(i=0;i<aawc->numl;++i) {
-        printf("L%u(%uw):", i, aawc->aaw[i]->al); 
-        for(j=0;j<aawc->aaw[i]->al;++j) {
-            printf("l%ut", aawc->aaw[i]->aw[j]->lp1-1);
-            switch(aawc->aaw[i]->aw[j]->t) {
-                case NUMS: printf("N "); break;
-                case PNI: printf("I "); break;
-                case STRG: printf("S "); break; /* basic string */
-                case STPP: printf("P "); break; /* word is a string and ends with a period */
-                case STCP: printf("C "); break; /* closing punctuation */
-                case SCST: printf("Z "); break; /* starting capital */
-                case SCCP: printf("Y "); break; /* starting capital and closing punctuation */
-                case ALLC: printf("A "); break; /* horrid! all capitals */
-            }
-        }
-    }
-    printf("\n"); 
-}
-
 aaw_c *processinpf(char *fname)
 {
     /* declarations */
@@ -378,6 +327,8 @@ int main(int argc, char *argv[])
     int min=0x7FFFFFFF, max=0;
     int rbyc=pwma->nr * pwma->nc;
     for(i=0;i<rbyc;++i) {
+        if((pwma->v[i] ==999) & (pwma->v[i] == 0) )
+            continue;
         if(pwma->v[i] < min) 
             min=pwma->v[i];
         if(pwma->v[i] > max)
@@ -414,7 +365,9 @@ int main(int argc, char *argv[])
         cairo_move_to (cr, 4, TM+i*rbsz +rbsz/2.- fe.descent + fe.height/2);
         cairo_set_source_rgb(cr, 0.9, 0.9, .9);
         cairo_show_text (cr, pwma->c1[i]);
-        for (j=0; j<pwma->nc-1-i; j++) { /* i and j serve as our block indices */
+        for (j=0; j<pwma->nc-1; j++) { /* i and j serve as our block indices */
+            if((pwma->v[i*pwma->nc+j] ==999) & (pwma->v[i*pwma->nc+j] == 0) )
+                continue;
             m=32*(pwma->v[i*pwma->nc+j] - min) / (max - min);
 #ifdef DBG
             printf("%s vs. %s: m is %i\n", pwma->r1[i], pwma->c1[j], m); 
